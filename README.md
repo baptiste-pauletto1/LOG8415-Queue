@@ -1,6 +1,6 @@
 # LOG8415-Queue
 
-Repository of my personnal project in the LOG8415 class at Polytechnique Montréal.
+Repository of my personnal project in the **LOG8415 : Advanced Concepts of Cloud Computing** class at Polytechnique Montréal.
 
 ## Queue analysis (*Analyse de files d'attentes*)
 
