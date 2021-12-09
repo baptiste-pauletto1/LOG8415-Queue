@@ -1,6 +1,14 @@
-Utilisation de FIFO pour le cas d'utilisation :
+Utilisation de FIFO/autre types pour le cas d'utilisation :
 - Créer un Simple Notification Service (SNS)
 - Créer un Simple Queue Service (SQS)
 - Abonner la SQS au SNS pour recevoir les messages publiés dans la SNS
 - Créer une fonction lambda pour exécuter les messages reçus dans la SQS
-- Analyser la gestion de la file d'attente et le scaling
+- Créer le trigger liant un nouveau message dans la SQS à notre lambda
+- Utiliser CloudWatch pour observer le résultat des messages 
+- Récupérer l'information utile (horodatage de l'exécution)
+- Récupérer les métriques associées via l'interface de Lambda
+
+Analyses possibles :
+- Coût, temps d'utilisation de ressources, proportion de messages perdus, quantités de requêtes simultanées, potentielles options (high fifo fidelity), différents topics et usage simultané
+- Paramètres à faire varier : Taille de la file d'attente, différentes stratégies (fifo/l'autre), 
+- Analyse du scaling (voir le nb de machines nécessaires).
