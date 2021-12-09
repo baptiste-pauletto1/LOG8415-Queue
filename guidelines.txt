@@ -1,0 +1,6 @@
+Utilisation de FIFO pour le cas d'utilisation :
+- Créer un Simple Notification Service (SNS)
+- Créer un Simple Queue Service (SQS)
+- Abonner la SQS au SNS pour recevoir les messages publiés dans la SNS
+- Créer une fonction lambda pour exécuter les messages reçus dans la SQS
+- Analyser la gestion de la file d'attente et le scaling
