@@ -12,3 +12,7 @@ Analyses possibles :
 - Coût, temps d'utilisation de ressources, proportion de messages perdus, quantités de requêtes simultanées, potentielles options (high fifo fidelity), différents topics et usage simultané
 - Paramètres à faire varier : Taille de la file d'attente, différentes stratégies (fifo/l'autre), 
 - Analyse du scaling (voir le nb de machines nécessaires).
+
+Structure :
+- Utiliser boto3 plutôt que des scripts (lisibilité)
+- Faire des wrappers pour les différents utilitaires (SNS, SQS, lambda...)
