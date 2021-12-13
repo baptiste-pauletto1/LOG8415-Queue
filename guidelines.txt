@@ -1,9 +1,10 @@
-Utilisation de FIFO/autre types pour le cas d'utilisation :
+Utilisation des files d'attente :
 - Créer un Simple Notification Service (SNS)
 - Créer un Simple Queue Service (SQS)
 - Abonner la SQS au SNS pour recevoir les messages publiés dans la SNS
 - Créer une fonction lambda pour exécuter les messages reçus dans la SQS
 - Créer le trigger liant un nouveau message dans la SQS à notre lambda
+- Exécuter un petit bout de code simulant une entrée en base de données (édition CSV sur S3)
 - Utiliser CloudWatch pour observer le résultat des messages 
 - Récupérer l'information utile (horodatage de l'exécution)
 - Récupérer les métriques associées via l'interface de Lambda
