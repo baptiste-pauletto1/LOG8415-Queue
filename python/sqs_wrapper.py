@@ -1,7 +1,6 @@
 from botocore.client import logger
 from botocore.exceptions import ClientError
 
-
 class SimpleQueueService:
 
     def __init__(self, resource):
@@ -17,12 +16,31 @@ class SimpleQueueService:
         """
         try:
             queue = self.sqs_resource.create_queue(QueueName=name, Attributes=attributes)
-            logger.info("Created topic %s with ARN %s.", name, queue.arn)
+            logger.info("Created queue %s with ARN %s.", name, queue.attributes.get("QueueArn"))
         except ClientError:
-            logger.exception("Couldn't create topic %s.", name)
+            logger.exception("Couldn't create queue %s.", name)
             raise
         else:
             return queue
+
+    @staticmethod
+    def set_attributes(queue, attributes):
+        """
+        Add permissions to a queue (like receiving message).
+
+        :param queue: The queue where permissions will be added
+        :param name: Name of the permissions added
+        :param topic_arn: topic allowed to publish to this queue
+        :param actions: Actions added to the specified queue
+
+        """
+        try:
+            queue.set_attributes(Attributes=attributes)
+            logger.info("Setting attributes to queue %s : %s.", queue.attributes.get("QueueArn"), attributes)
+        except ClientError:
+            logger.exception("Couldn't set to queue %s attributes %s.",
+                             queue.attributes.get("QueueArn"), attributes)
+            raise
 
     @staticmethod
     def receive_messages(queue):
@@ -34,7 +52,7 @@ class SimpleQueueService:
         """
 
         try:
-            messages = queue.receive_messages(AttributeNames=['All'])
+            messages = queue.receive_messages(AttributeNames=['All'], WaitTimeSeconds=15)
         except ClientError:
             logger.exception("Couldn't retrieve message from queue %s.", queue.arn)
             raise
@@ -56,6 +74,35 @@ class SimpleQueueService:
             raise
 
     @staticmethod
+    def generate_policy(queue, topic):
+        """
+        Generate an appropriate policy document to allow our SQS to receive messages from SNS
+
+        :param queue: Queue that will receive the right to get messages from the topic
+        :param topic: Topic that will be allowed to send messages to the queue
+        :return: Policy to allow the queue to receive messages from the topic
+        """
+        new_policy = """{{
+          "Version":"2012-10-17",
+          "Statement":[
+            {{
+              "Sid":"MyPolicy",
+              "Effect":"Allow",
+              "Principal" : {{"AWS" : "*"}},
+              "Action":"SQS:SendMessage",
+              "Resource": "{}",
+              "Condition":{{
+                "ArnEquals":{{
+                  "aws:SourceArn": "{}"
+                }}
+              }}
+            }}
+          ]
+        }}""".format(queue.attributes.get("QueueArn"), topic.arn)
+
+        return new_policy
+
+    @staticmethod
     def delete_queue(queue):
         """
         Delete the specified queue.
@@ -65,7 +112,7 @@ class SimpleQueueService:
         """
         try:
             queue.delete()
-            logger.info("Deleted queue %s.", queue.arn)
+            logger.info("Deleted queue %s.", queue.attributes.get('QueueArn'))
         except ClientError:
             logger.exception("Couldn't delete queue %s.", queue.arn)
             raise

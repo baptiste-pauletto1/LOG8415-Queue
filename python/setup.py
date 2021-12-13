@@ -1,32 +1,53 @@
+import logging
 import boto3
+from python.sns_wrapper import SimpleNotificationService
+from python.sqs_wrapper import SimpleQueueService
+
+
+ACCOUNT_ID = ['866658200244']
+logger = logging.getLogger(__name__)
 
 
 def create_resources():
 
     return boto3.resource('sns'), boto3.resource('sqs')
 
-
-def create_topic(sns_resource, topic_name, attributes):
-
-    topic = sns_resource.create_topic(Name=topic_name, Attributes=attributes)
-
-    return topic.attributes.get('TopicArn')
-
-
-def create_queue(sqs_resource, queue_name, attributes):
-
-    # Create the queue. This returns an SQS.Queue instance
-    queue = sqs_resource.create_queue(QueueName=queue_name, Attributes=attributes)
-
-    return queue.attributes.get('QueueArn')
-
+## TODO : Faire une fonction setup et une fonction clean
 
 if __name__ == "__main__":
-    sns, sqs = create_resources()
 
-    attributes_sns = {'FifoTopic': 'true', 'ContentBasedDeduplication': 'true'}
-    attributes_sqs = {'FifoQueue': 'true', 'ContentBasedDeduplication': 'true'}
+    logging.basicConfig(level=logging.INFO, format='%(levelname)s: %(message)s')
 
-    topic_arn = create_topic(sns, "testTopic.fifo", attributes_sns)
-    queue_arn = create_queue(sqs, "premiereQueueB.fifo", attributes_sqs)
-    print(queue_arn)
+    sns_resource, sqs_resource = create_resources()
+
+    # attributes_sns = {'FifoTopic': 'true', 'ContentBasedDeduplication': 'true'}
+    # attributes_sqs = {'FifoQueue': 'true', 'ContentBasedDeduplication': 'true'}
+    attributes_sns = {}
+    attributes_sqs = {}
+
+    # Instantiating our wrappers
+    sns = SimpleNotificationService(sns_resource)
+    sqs = SimpleQueueService(sqs_resource)
+
+    topic = sns.create_topic("testWrapper", attributes_sns)
+    topics = sns.list_topics()
+
+    queue = sqs.create_queue("testWrapperQueue", attributes_sqs)
+    policy = sqs.generate_policy(queue, topic)
+    sqs.set_attributes(queue, {'Policy': policy})
+
+    subscription = sns.subscribe(topic, queue.attributes.get("QueueArn"))
+
+    sns.publish_message(topic, "salut", {"coucou": "1"})
+    sns.publish_message(topic, "salut", {"coucou": "1"})
+    sns.publish_message(topic, "salut", {"coucou": "1"})
+    sns.publish_message(topic, "salut", {"coucou": "1"})
+    sns.publish_message(topic, "salut", {"coucou": "1"})
+    messages = sqs.receive_messages(queue)
+    print(messages)
+
+    sns.delete_topic(topic)
+    sqs.delete_queue(queue)
+
+
+
