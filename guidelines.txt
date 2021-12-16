@@ -1,17 +1,19 @@
 Utilisation des files d'attente :
 - Créer un Simple Notification Service (SNS)
 - Créer un Simple Queue Service (SQS)
+- Ajouter la politique permettant à la SNS de publier dans la SQS
 - Abonner la SQS au SNS pour recevoir les messages publiés dans la SNS
 - Créer une fonction lambda pour exécuter les messages reçus dans la SQS
 - Créer le trigger liant un nouveau message dans la SQS à notre lambda
-- Exécuter un petit bout de code simulant une entrée en base de données (édition CSV sur S3)
-- Utiliser CloudWatch pour observer le résultat des messages 
-- Récupérer l'information utile (horodatage de l'exécution)
-- Récupérer les métriques associées via l'interface de Lambda
+- Créer la table dans DynamoDB pour stocker les traitements
+- Ajouter la politique permettant à notre fonction Lambda d'ajouter des items dans la base de données dynamoDB
+- Exécuter un bout de code permettant d'ajouter un item dans la table de notre base de données
+- Récupérer l'information utile (horodatage de l'exécution, temps de traitement)
+- Récupérer les autres métriques associées via l'interface de Lambda
 
 Analyses possibles :
 - Coût, temps d'utilisation de ressources, proportion de messages perdus, quantités de requêtes simultanées, potentielles options (high fifo fidelity), différents topics et usage simultané
-- Paramètres à faire varier : Taille de la file d'attente, différentes stratégies (fifo/l'autre), 
+- Paramètres à faire varier : Taille de la file d'attente, différentes stratégies (fifo/standard),
 - Analyse du scaling (voir le nb de machines nécessaires).
 
 Structure :
