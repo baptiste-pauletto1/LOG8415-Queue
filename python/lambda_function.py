@@ -6,8 +6,8 @@ def lambda_handler(event, context):
     try:
         # Getting our event parameters
         table_name = event.get('table')
-        id = event.get('id')
-        customer = event.get('customer')
+        id_concert = event.get('id_concert')
+        id_customer = event.get('id_customer')
         ticket = event.get('ticket')
         time = event.get('time')
 
@@ -18,7 +18,7 @@ def lambda_handler(event, context):
         table = client.Table(table_name)
 
         # Adding the new entry
-        table.put_item(Item={'id': id, 'customer': customer, 'ticket': ticket, 'time': time})
+        table.put_item(Item={'id_concert': id_concert, 'id_customer': id_customer, 'ticket': ticket, 'time': time})
 
         return {
             'statusCode': 200,
