@@ -42,11 +42,36 @@ class Lambda:
                                                                        'ZipFile': self.generate_bytecode('../lambda-code/my-deployment-package.zip')
                                                                    }
                                                                    )
+            logger.info("Created lambda function %s with ARN %s.", name, lambda_function.get('FunctionArn'))
         except ClientError:
-            logger.exception("Couldn't create the lambda function.")
+            logger.exception("Couldn't create the lambda function %s.", name)
             raise
         else:
             return lambda_function
+
+    def add_trigger(self, source, function):
+        """
+        Add a mapping to allow SQS messages to be treated by our Lambda function
+
+        :param source: the SQS queue that will provide messages
+        :param function: the lambda function that will treat those messages
+        :return: Mapping response.
+        """
+        try:
+            mapping = self.lambda_resource.create_event_source_mapping(EventSourceArn=source.attributes.get('QueueArn'),
+                                                                       FunctionName=function.get('FunctionArn'),
+                                                                       Enabled=True,
+                                                                       # Could be changed for further analysis (BS > 1).
+                                                                       BatchSize=1
+                                                                       )
+            logger.info("Added trigger from %s to lambda : %s.", source.attributes.get('QueueArn'),
+                        function.get('FunctionArn'))
+        except ClientError:
+            logger.exception("Couldn't add trigger from %s on lambda :%s.", source.attributes.get('QueueArn'),
+                             function.get('FunctionArn'))
+            raise
+        else:
+            return mapping
 
     @staticmethod
     def delete_function(function):

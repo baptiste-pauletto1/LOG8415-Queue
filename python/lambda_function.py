@@ -2,14 +2,25 @@ import json
 import boto3
 
 
+# Used to unpack data coming from SQS and SNS
+def format_input(event):
+    data = event['Records'][0]['body']
+    data = data.replace("\n", "")
+    clean_data = data.replace(" ", "")
+    return json.loads(clean_data)
+
+
 def lambda_handler(event, context):
     try:
+        # Formatting input
+        body = format_input(event)
+
         # Getting our event parameters
-        table_name = event.get('table')
-        id_concert = event.get('id_concert')
-        id_customer = event.get('id_customer')
-        ticket = event.get('ticket')
-        time = event.get('time')
+        table_name = body['MessageAttributes']['table']['Value']
+        id_concert = int(body['MessageAttributes']['id_concert']['Value'])
+        id_customer = int(body['MessageAttributes']['id_customer']['Value'])
+        ticket = int(body['MessageAttributes']['ticket']['Value'])
+        time = body['MessageAttributes']['time']['Value']
 
         # Getting the dynamoDB resource
         client = boto3.resource('dynamodb')
@@ -18,7 +29,8 @@ def lambda_handler(event, context):
         table = client.Table(table_name)
 
         # Adding the new entry
-        table.put_item(Item={'id_concert': id_concert, 'id_customer': id_customer, 'ticket': ticket, 'time': time})
+        table.put_item(Item={'id_concert': id_concert, 'id_customer': id_customer,
+                             'ticket': ticket, 'time': time})
 
         return {
             'statusCode': 200,
@@ -26,7 +38,6 @@ def lambda_handler(event, context):
         }
 
     except:
-
         return {
             'statusCode': 400,
             'body': json.dumps('Error ! Request was rejected')

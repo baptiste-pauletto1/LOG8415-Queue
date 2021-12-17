@@ -1,5 +1,6 @@
 import logging
 import boto3
+import time
 
 from python.lambda_wrapper import Lambda
 from python.sns_wrapper import SimpleNotificationService
@@ -15,7 +16,6 @@ def create_resources():
 
 
 # TODO : Faire une fonction setup et une fonction clean
-
 
 if __name__ == "__main__":
     logging.basicConfig(level=logging.INFO, format='%(levelname)s: %(message)s')
@@ -35,7 +35,6 @@ if __name__ == "__main__":
 
     # Creating our SNS topic
     topic = sns.create_topic("testWrapper", attributes_sns)
-    topics = sns.list_topics()
 
     # Creating a standard SQS queue
     queue = sqs.create_queue("testWrapperQueue", attributes_sqs)
@@ -46,16 +45,25 @@ if __name__ == "__main__":
     subscription = sns.subscribe(topic, queue.attributes.get("QueueArn"))
 
     # Creating the Lambda function
-    lambda_function = lambda_wrapper.create_function("testBOTO")
+    lambda_function = lambda_wrapper.create_function("testBOTOx")
+
+    # Adding the trigger on SQS messages
+    mapping = lambda_wrapper.add_trigger(queue, lambda_function)
 
     # Creating the DynamoDB table
     table = dynamodb.create_table("TestDynamoDB")
 
-    sns.publish_message(topic, "salut", {"coucou": "1"})
-    sns.publish_message(topic, "salut", {"coucou": "1"})
-    sns.publish_message(topic, "salut", {"coucou": "1"})
-    sns.publish_message(topic, "salut", {"coucou": "1"})
-    sns.publish_message(topic, "salut", {"coucou": "1"})
+    # Wait until everything is properly instantiated
+    time.sleep(5)
+
+    # Test message
+    sns.publish_message(topic, "DB_entry",
+                        {"table": "TestDynamoDB",
+                         "id_concert": "1",
+                         "id_customer": "2",
+                         "ticket": "1",
+                         "time": "19/12/2021"})
+
     messages = sqs.receive_messages(queue)
     print(messages)
 
