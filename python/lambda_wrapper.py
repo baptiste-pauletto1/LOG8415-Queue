@@ -73,6 +73,20 @@ class Lambda:
         else:
             return mapping
 
+    def delete_trigger(self, trigger, function):
+        """
+        Deletes a trigger from a lambda function
+
+        :param trigger: Trigger to be deleted
+        :param function: Function concerned by the trigger
+        """
+        try:
+            self.lambda_resource.delete_event_source_mapping(UUID=trigger.get('UUID'))
+            logger.info("Deleted trigger from lambda : %s.", function.get('FunctionArn'))
+        except ClientError:
+            logger.exception("Couldn't delete trigger on lambda %s.", function.get('FunctionArn'))
+            raise
+
     @staticmethod
     def delete_function(function):
         """
@@ -82,7 +96,7 @@ class Lambda:
         """
         try:
             function.delete()
-            logger.info("Deleted function %s.", function.arn)
+            logger.info("Deleted Lambda function successfully.")
         except ClientError:
-            logger.exception("Couldn't delete function %s.", function.arn)
+            logger.exception("Couldn't delete function %s.",  function.get('FunctionArn'))
             raise

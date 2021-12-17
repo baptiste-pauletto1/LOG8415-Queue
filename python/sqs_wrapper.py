@@ -112,8 +112,8 @@ class SimpleQueueService:
         """
         try:
             queue.delete()
-            logger.info("Deleted queue %s.", queue.attributes.get('QueueArn'))
+            logger.info("Deleted queue successfully.")
         except ClientError:
-            logger.exception("Couldn't delete queue %s.", queue.arn)
+            logger.exception("Couldn't delete queue %s.", queue.attributes.get('QueueArn'))
             raise
 

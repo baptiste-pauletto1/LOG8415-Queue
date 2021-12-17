@@ -67,8 +67,12 @@ if __name__ == "__main__":
     messages = sqs.receive_messages(queue)
     print(messages)
 
+    # Wait until everything has finished
+    time.sleep(5)
+
     # Cleaning AWS components
     sns.delete_topic(topic)
     sqs.delete_queue(queue)
     dynamodb.delete_table(table)
+    lambda_wrapper.delete_trigger(mapping, lambda_function)
     lambda_wrapper.delete_function(lambda_function)
