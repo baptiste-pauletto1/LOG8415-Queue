@@ -25,23 +25,23 @@ class SimpleNotificationService:
             return topic
 
     @staticmethod
-    def subscribe(topic, queue_arn):
+    def subscribe(topic, queue):
         """
         Subscribes an endpoint to the topic.
         We do not specify a particular protocol or endpoint since we will be only using
         SQS and Lambda functions to handle our experiments.
 
         :param topic: The topic to subscribe to.
-        :param queue_arn: The ARN of the SQS queue that will receive the messages.
+        :param queue: The SQS queue that will receive the messages.
         :return: The newly added subscription.
         """
         try:
             subscription = topic.subscribe(
-                Protocol='sqs', Endpoint=queue_arn, ReturnSubscriptionArn=True)
-            logger.info("Subscribed the queue %s to topic %s.", queue_arn, topic.arn)
+                Protocol='sqs', Endpoint=queue.attributes.get("QueueArn"), ReturnSubscriptionArn=True)
+            logger.info("Subscribed the queue %s to topic %s.", queue.attributes.get("QueueArn"), topic.arn)
         except ClientError:
             logger.exception(
-                "Couldn't subscribe the queue %s to topic %s.", queue_arn, topic.arn)
+                "Couldn't subscribe the queue %s to topic %s.", queue.attributes.get("QueueArn"), topic.arn)
             raise
         else:
             return subscription

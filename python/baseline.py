@@ -43,7 +43,7 @@ if __name__ == "__main__":
     # Editing policy to allow SNS to publish on SQS
     sqs.set_attributes(queue, {'Policy': policy})
     # Subscribe the queue to the formerly created topic
-    subscription = sns.subscribe(topic, queue.attributes.get("QueueArn"))
+    subscription = sns.subscribe(topic, queue)
 
     # Creating the Lambda function
     lambda_function = lambda_wrapper.create_function("testBOTOx")
