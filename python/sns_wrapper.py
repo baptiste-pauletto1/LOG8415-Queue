@@ -47,7 +47,7 @@ class SimpleNotificationService:
             return subscription
 
     @staticmethod
-    def publish_message(topic, message, attributes):
+    def publish_message(topic, message, attributes, deduplication_id=-1, group_id=-1):
         """
         Comment extracted from AWS SDK boto3 doc :
         Publishes a message, with attributes, to a topic. Subscriptions can be filtered
@@ -58,6 +58,8 @@ class SimpleNotificationService:
         :param message: The message to publish.
         :param attributes: The key-value attributes to attach to the message. Values
                            must be either `str` or `bytes`.
+        :param group_id: The group ID used in FIFO queues
+        :param deduplication_id: The deduplication ID used in FIFO queues
         :return: The ID of the message.
         """
         try:
@@ -67,7 +69,11 @@ class SimpleNotificationService:
                     att_dict[key] = {'DataType': 'String', 'StringValue': value}
                 elif isinstance(value, bytes):
                     att_dict[key] = {'DataType': 'Binary', 'BinaryValue': value}
-            response = topic.publish(Message=message, MessageAttributes=att_dict)
+            if deduplication_id == -1:
+                response = topic.publish(Message=message, MessageAttributes=att_dict)
+            else:
+                response = topic.publish(Message=message, MessageAttributes=att_dict,
+                                         MessageDeduplicationId=deduplication_id, MessageGroupId=group_id)
             message_id = response['MessageId']
             logger.info(
                 "Published message with attributes %s to topic %s.", attributes,

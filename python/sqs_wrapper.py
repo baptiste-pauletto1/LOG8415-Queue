@@ -1,6 +1,20 @@
 from botocore.client import logger
 from botocore.exceptions import ClientError
 
+
+def format_arn(topics):
+    formatted_arn = ""
+    if len(topics) == 1:
+        formatted_arn += f'\n"aws:SourceArn": "{topics[0].arn}"\n'
+    else:
+        for topic in topics:
+            if not topics.index[topic] == len(topics)-1:
+                formatted_arn += f'\n"aws:SourceArn": "{topic.arn}",\n'
+            else:
+                formatted_arn += f'\n"aws:SourceArn": "{topic.arn}"\n'
+    return formatted_arn
+
+
 class SimpleQueueService:
 
     def __init__(self, resource):
@@ -72,12 +86,12 @@ class SimpleQueueService:
             raise
 
     @staticmethod
-    def generate_policy(queue, topic):
+    def generate_policy(queue, topics):
         """
         Generate an appropriate policy document to allow our SQS to receive messages from SNS
 
         :param queue: Queue that will receive the right to get messages from the topic
-        :param topic: Topic that will be allowed to send messages to the queue
+        :param topics: Topic(s) that will be allowed to send messages to the queue
         :return: Policy to allow the queue to receive messages from the topic
         """
         new_policy = """{{
@@ -90,13 +104,11 @@ class SimpleQueueService:
               "Action":"SQS:SendMessage",
               "Resource": "{}",
               "Condition":{{
-                "ArnEquals":{{
-                  "aws:SourceArn": "{}"
-                }}
+                "ArnEquals":{{{}}}
               }}
             }}
           ]
-        }}""".format(queue.attributes.get("QueueArn"), topic.arn)
+        }}""".format(queue.attributes.get("QueueArn"), format_arn(topics))
 
         return new_policy
 

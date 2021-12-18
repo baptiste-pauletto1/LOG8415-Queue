@@ -16,8 +16,6 @@ def create_resources():
     return boto3.resource('sns'), boto3.resource('sqs'), boto3.resource('dynamodb'), boto3.client('lambda')
 
 
-# TODO : Faire une fonction setup et une fonction clean
-
 if __name__ == "__main__":
     logging.basicConfig(level=logging.INFO, format='%(levelname)s: %(message)s')
 
@@ -39,7 +37,7 @@ if __name__ == "__main__":
 
     # Creating a standard SQS queue
     queue = sqs.create_queue("testWrapperQueue", attributes_sqs)
-    policy = sqs.generate_policy(queue, topic)
+    policy = sqs.generate_policy(queue, [topic])
     # Editing policy to allow SNS to publish on SQS
     sqs.set_attributes(queue, {'Policy': policy})
     # Subscribe the queue to the formerly created topic
@@ -58,7 +56,7 @@ if __name__ == "__main__":
     time.sleep(5)
 
     # Test message
-    for i in range(0, 150):
+    for i in range(0, 1):
         sns.publish_message(topic, "DB_entry",
                             {"table": "TestDynamoDB",
                              "id_concert": f"{random.randrange(10)}",
