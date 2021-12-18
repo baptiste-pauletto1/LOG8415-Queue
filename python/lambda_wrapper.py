@@ -87,15 +87,14 @@ class Lambda:
             logger.exception("Couldn't delete trigger on lambda %s.", function.get('FunctionArn'))
             raise
 
-    @staticmethod
-    def delete_function(function):
+    def delete_function(self, function):
         """
         Deletes a lambda function
 
         :param function : Function to be deleted
         """
         try:
-            function.delete()
+            self.lambda_resource.delete_function(FunctionName=function.get('FunctionArn'))
             logger.info("Deleted Lambda function successfully.")
         except ClientError:
             logger.exception("Couldn't delete function %s.",  function.get('FunctionArn'))
