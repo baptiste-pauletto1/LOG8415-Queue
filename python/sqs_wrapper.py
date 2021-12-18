@@ -5,13 +5,15 @@ from botocore.exceptions import ClientError
 def format_arn(topics):
     formatted_arn = ""
     if len(topics) == 1:
-        formatted_arn += f'\n"aws:SourceArn": "{topics[0].arn}"\n'
+        formatted_arn += topics[0].arn
     else:
+        formatted_arn += '['
         for topic in topics:
-            if not topics.index[topic] == len(topics)-1:
-                formatted_arn += f'\n"aws:SourceArn": "{topic.arn}",\n'
+            if not topics.index(topic) == len(topics)-1:
+                formatted_arn += f'"{topic.arn}", '
             else:
-                formatted_arn += f'\n"aws:SourceArn": "{topic.arn}"\n'
+                formatted_arn += f'"{topic.arn}"'
+        formatted_arn += ']'
     return formatted_arn
 
 
@@ -104,7 +106,9 @@ class SimpleQueueService:
               "Action":"SQS:SendMessage",
               "Resource": "{}",
               "Condition":{{
-                "ArnEquals":{{{}}}
+                "ArnEquals":{{
+                  "aws:SourceArn": {}
+                }}
               }}
             }}
           ]
