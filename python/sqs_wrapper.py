@@ -28,10 +28,8 @@ class SimpleQueueService:
         """
         Add permissions to a queue (like receiving message).
 
+        :param attributes: Attributes to be added to the queue
         :param queue: The queue where permissions will be added
-        :param name: Name of the permissions added
-        :param topic_arn: topic allowed to publish to this queue
-        :param actions: Actions added to the specified queue
 
         """
         try:
@@ -54,7 +52,7 @@ class SimpleQueueService:
         try:
             messages = queue.receive_messages(AttributeNames=['All'], WaitTimeSeconds=15)
         except ClientError:
-            logger.exception("Couldn't retrieve message from queue %s.", queue.arn)
+            logger.exception("Couldn't retrieve message from queue %s.", queue.attributes.get("QueueArn"))
             raise
         else:
             return messages
@@ -68,9 +66,9 @@ class SimpleQueueService:
         """
         try:
             queue.purge()
-            logger.info("Purged queue %s.", queue.arn)
+            logger.info("Purged queue %s.", queue.attributes.get("QueueArn"))
         except ClientError:
-            logger.exception("Couldn't purge queue %s.", queue.arn)
+            logger.exception("Couldn't purge queue %s.", queue.attributes.get("QueueArn"))
             raise
 
     @staticmethod
