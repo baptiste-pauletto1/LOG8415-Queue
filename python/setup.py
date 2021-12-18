@@ -1,6 +1,7 @@
 import logging
 import boto3
 import time
+import random
 
 from python.lambda_wrapper import Lambda
 from python.sns_wrapper import SimpleNotificationService
@@ -57,18 +58,19 @@ if __name__ == "__main__":
     time.sleep(5)
 
     # Test message
-    sns.publish_message(topic, "DB_entry",
-                        {"table": "TestDynamoDB",
-                         "id_concert": "1",
-                         "id_customer": "2",
-                         "ticket": "1",
-                         "time": "19/12/2021"})
+    for i in range(0, 150):
+        sns.publish_message(topic, "DB_entry",
+                            {"table": "TestDynamoDB",
+                             "id_concert": f"{random.randrange(10)}",
+                             "id_customer": f"{i}",
+                             "ticket_class": f"{random.choice(['classic', 'premium', 'gold'])}",
+                             "date": "19/12/2021"})
 
     messages = sqs.receive_messages(queue)
     print(messages)
 
     # Wait until everything has finished
-    time.sleep(5)
+    time.sleep(60)
 
     # Cleaning AWS components
     sns.delete_topic(topic)
