@@ -18,7 +18,7 @@ def create_resources():
 
 
 def send_messages(num_user):
-    for id_topic in range(0, 2):
+    for id_topic in range(0, 5):
         sns.publish_message(topics[id_topic], "SC2_entry",
                             {"table": "DBSC2",
                              "id_concert": f"{id_topic}",
@@ -50,7 +50,7 @@ if __name__ == "__main__":
     topics = []
 
     # Generating topics
-    for i in range(0, 2):
+    for i in range(0, 5):
         topic = sns.create_topic(f"topicSC2_{i}.fifo", attributes_sns)
         topics.append(topic)
 
@@ -74,7 +74,7 @@ if __name__ == "__main__":
 
     # Initializing pool for parallel execution
     pool_object = multiprocessing.Pool()
-    pool_object.map(send_messages, range(0, 5))
+    pool_object.map(send_messages, range(0, 100))
 
     # Wait until everything has finished
     time.sleep(120)

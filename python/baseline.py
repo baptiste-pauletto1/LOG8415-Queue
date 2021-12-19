@@ -21,8 +21,6 @@ if __name__ == "__main__":
 
     sns_resource, sqs_resource, dynamodb_resource, lambda_resource = create_resources()
 
-    # attributes_sns = {'FifoTopic': 'true', 'ContentBasedDeduplication': 'true'}
-    # attributes_sqs = {'FifoQueue': 'true', 'ContentBasedDeduplication': 'true'}
     attributes_sns = {}
     attributes_sqs = {}
 
@@ -33,10 +31,10 @@ if __name__ == "__main__":
     lambda_wrapper = Lambda(lambda_resource)  # has a special name cuz lambda word is reserved
 
     # Creating our SNS topic
-    topic = sns.create_topic("testWrapper", attributes_sns)
+    topic = sns.create_topic("topicbase", attributes_sns)
 
     # Creating a standard SQS queue
-    queue = sqs.create_queue("testWrapperQueue", attributes_sqs)
+    queue = sqs.create_queue("queuebase", attributes_sqs)
     policy = sqs.generate_policy(queue, [topic])
     # Editing policy to allow SNS to publish on SQS
     sqs.set_attributes(queue, {'Policy': policy})
@@ -44,28 +42,25 @@ if __name__ == "__main__":
     subscription = sns.subscribe(topic, queue)
 
     # Creating the Lambda function
-    lambda_function = lambda_wrapper.create_function("testBOTOx")
+    lambda_function = lambda_wrapper.create_function("lambdabase")
 
     # Adding the trigger on SQS messages
     mapping = lambda_wrapper.add_trigger(queue, lambda_function)
 
     # Creating the DynamoDB table
-    table = dynamodb.create_table("TestDynamoDB")
+    table = dynamodb.create_table("DBbase")
 
     # Wait until everything is properly instantiated
     time.sleep(5)
 
     # Test message
-    for i in range(0, 1):
+    for i in range(0, 500):
         sns.publish_message(topic, "DB_entry",
-                            {"table": "TestDynamoDB",
+                            {"table": "DBbase",
                              "id_concert": f"{random.randrange(10)}",
                              "id_customer": f"{i}",
                              "ticket_class": f"{random.choice(['classic', 'premium', 'gold'])}",
                              "date": "19/12/2021"})
-
-    messages = sqs.receive_messages(queue)
-    print(messages)
 
     # Wait until everything has finished
     time.sleep(60)
