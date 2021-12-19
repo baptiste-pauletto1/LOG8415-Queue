@@ -5,7 +5,7 @@ from botocore.exceptions import ClientError
 def format_arn(topics):
     formatted_arn = ""
     if len(topics) == 1:
-        formatted_arn += topics[0].arn
+        formatted_arn += '"' + topics[0].arn + '"'
     else:
         formatted_arn += '['
         for topic in topics:
