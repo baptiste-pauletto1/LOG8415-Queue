@@ -76,9 +76,6 @@ if __name__ == "__main__":
     pool_object = multiprocessing.Pool()
     pool_object.map(send_messages, range(0, 5))
 
-    messages = sqs.receive_messages(queue)
-    print(messages)
-
     # Wait until everything has finished
     time.sleep(120)
 

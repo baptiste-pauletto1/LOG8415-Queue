@@ -32,8 +32,6 @@ if __name__ == "__main__":
 
     sns_resource, sqs_resource, dynamodb_resource, lambda_resource = create_resources()
 
-    # attributes_sns = {'FifoTopic': 'true', 'ContentBasedDeduplication': 'true'}
-    # attributes_sqs = {'FifoQueue': 'true', 'ContentBasedDeduplication': 'true'}
     attributes_sns = {}
     attributes_sqs = {}
 
@@ -77,9 +75,6 @@ if __name__ == "__main__":
     # Initializing pool for parallel execution
     pool_object = multiprocessing.Pool()
     pool_object.map(send_messages, range(0, 5))
-
-    messages = sqs.receive_messages(queue)
-    print(messages)
 
     # Wait until everything has finished
     time.sleep(60)
