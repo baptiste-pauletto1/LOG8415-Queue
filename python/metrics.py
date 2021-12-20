@@ -1,4 +1,4 @@
-from datetime import datetime
+from datetime import datetime, timedelta
 import boto3
 import seaborn as sns
 import matplotlib.pyplot as plt
@@ -77,8 +77,8 @@ if __name__ == "__main__":
                query_duration_SC1, query_invocation_SC1, query_concurrent_SC1,
                query_duration_SC2, query_invocation_SC2, query_concurrent_SC2]
 
-    # Calling AWS Cloudwatch
-    values = get_values(cloudwatch, queries, datetime(2021, 12, 19, 9, 50), datetime(2021, 12, 19, 10, 10))
+    # Calling AWS Cloudwatch from now - 30 mins in the past.
+    values = get_values(cloudwatch, queries, datetime.now(), datetime.now() - timedelta(hours=0, minutes=30))
 
     # Formatting values
     values_concurrent = [values['MetricDataResults'][2]['Values'][0], values['MetricDataResults'][5]['Values'][0],
