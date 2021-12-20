@@ -6,6 +6,12 @@ Repository of my personnal project in the **LOG8415 : Advanced Concepts of Cloud
 
 The project's main goal is to get hands on with AWS services like **Lambda functions**, **Simple Notification Service**, **Simple Queue Service** and **DynamoDB**  in order to complete a performance analysis of actual implementation of waiting queues using a serverless approach.
 
+## Architecture
+
+The project architecture on AWS will focus on the components in the main square of this picture.
+![Architecture](https://github.com/baptiste-pauletto1/Queue-Analysis/blob/main/?raw=true)
+<figcaption align = "center"><b>Fig.1 - Project architecture </b></figcaption>
+
 # Project setup
 
 Please follow the next steps in order to run the project on your own machine.
