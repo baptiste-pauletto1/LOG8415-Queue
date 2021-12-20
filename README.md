@@ -39,6 +39,7 @@ python3 scenario_1.py
 python3 scenario_2.py
 ```
 More details about each scenario are present in the `rapport.pdf` file.
+
 When running scenarios, different logging steps will be displayed in order to follow how everything is going.
 
 *Notice* : Each scenario file has been thought in a way that allows him to be run independently of other scenario.
