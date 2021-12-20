@@ -1,7 +1,9 @@
-import logging
 from datetime import datetime
 import boto3
-import time
+import seaborn as sns
+import matplotlib.pyplot as plt
+import pandas as pd
+
 
 
 def structure_data_query(id_query, namespace, metric_name, dimensions, period, stat):
@@ -21,7 +23,7 @@ def get_values(client, metric_queries, start_time, end_time):
 
 
 if __name__ == "__main__":
-    cloudwatch = boto3.client('cloudwatch')
+    cloudwatch = boto3.client('cloudwatch', region_name='us-east-1')
 
     # Defining AWS namespace
     namespace_lambda = 'AWS/Lambda'
@@ -78,4 +80,34 @@ if __name__ == "__main__":
 
     values = get_values(cloudwatch, queries, datetime(2021, 12, 19, 9, 50), datetime(2021, 12, 19, 10, 10))
 
-    print(values)
+    values_duration = [values['MetricDataResults'][0]['Values'][0],values['MetricDataResults'][3]['Values'][0],
+                       values['MetricDataResults'][6]['Values'][0]]
+
+    df_values_duration = pd.DataFrame([values_duration], columns=["Baseline", "Standard Queue", "FIFO Queue"])
+
+    sns.set_theme(style="whitegrid")
+    ax = sns.barplot(data=df_values_duration, palette='Blues_d')
+    ax.set(xlabel='Scenario', ylabel='Duration (seconds) (mean)')
+
+    plt.show()
+
+    values_invocation = [values['MetricDataResults'][1]['Values'][0], values['MetricDataResults'][4]['Values'][0],
+                         values['MetricDataResults'][7]['Values'][0]]
+
+    df_values_invocation = pd.DataFrame([values_invocation], columns=["Baseline", "Standard Queue", "FIFO Queue"])
+
+    ax = sns.barplot(data=df_values_invocation, palette='Blues_d')
+    ax.set(xlabel='Scenario', ylabel='Number of invocations (sum)')
+
+    plt.show()
+
+    values_concurrent = [values['MetricDataResults'][2]['Values'][0], values['MetricDataResults'][5]['Values'][0],
+                         values['MetricDataResults'][8]['Values'][0]]
+
+    df_values_concurrent = pd.DataFrame([values_concurrent], columns=["Baseline", "Standard Queue", "FIFO Queue"])
+
+    ax = sns.barplot(data=df_values_concurrent, palette='Blues_d')
+    ax.set(xlabel='Scenario', ylabel='Number of concurrent executions (mean)')
+
+    plt.show()
+
