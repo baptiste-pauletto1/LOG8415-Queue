@@ -9,7 +9,7 @@ The project's main goal is to get hands on with AWS services like **Lambda funct
 ## Architecture
 
 The project architecture on AWS will focus on the components in the main square of this picture.
-![Architecture](https://github.com/baptiste-pauletto1/Queue-Analysis/blob/main/?raw=true)
+![Architecture](https://github.com/baptiste-pauletto1/Queue-Analysis/blob/main/architecture.png?raw=true)
 <figcaption align = "center"><b>Fig.1 - Project architecture </b></figcaption>
 
 # Project setup
