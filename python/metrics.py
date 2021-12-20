@@ -5,7 +5,6 @@ import matplotlib.pyplot as plt
 import pandas as pd
 
 
-
 def structure_data_query(id_query, namespace, metric_name, dimensions, period, stat):
     query = {'Id': id_query, 'MetricStat': {
         'Metric': {
@@ -78,37 +77,44 @@ if __name__ == "__main__":
                query_duration_SC1, query_invocation_SC1, query_concurrent_SC1,
                query_duration_SC2, query_invocation_SC2, query_concurrent_SC2]
 
+    # Calling AWS Cloudwatch
     values = get_values(cloudwatch, queries, datetime(2021, 12, 19, 9, 50), datetime(2021, 12, 19, 10, 10))
 
+    # Formatting values
     values_concurrent = [values['MetricDataResults'][2]['Values'][0], values['MetricDataResults'][5]['Values'][0],
                          values['MetricDataResults'][8]['Values'][0]]
 
+    # Turning values to dataframe
     df_values_concurrent = pd.DataFrame([values_concurrent], columns=["Baseline", "Standard Queue", "FIFO Queue"])
 
+    # Use SNS and matplotlib to save the graph
     sns.set_theme(style="whitegrid")
     ax = sns.barplot(data=df_values_concurrent, palette='Blues_d')
     ax.set(xlabel='Scenario', ylabel='Number of concurrent executions (mean)')
-
     plt.savefig("../metrics_result/concurrent_comparison.png", bbox_inches='tight')
 
+    # Formatting values
     values_duration = [values['MetricDataResults'][0]['Values'][0], values['MetricDataResults'][3]['Values'][0],
                        values['MetricDataResults'][6]['Values'][0]]
 
+    # Turning values to dataframe
     df_values_duration = pd.DataFrame([values_duration], columns=["Baseline", "Standard Queue", "FIFO Queue"])
 
+    # Use SNS and matplotlib to save the graph
     ax = sns.barplot(data=df_values_duration, palette='Blues_d')
     ax.set(xlabel='Scenario', ylabel='Duration (seconds) (mean)')
-
     plt.savefig("../metrics_result/duration_comparison.png", bbox_inches='tight')
 
+    # Formatting values
     values_invocation = [values['MetricDataResults'][1]['Values'][0], values['MetricDataResults'][4]['Values'][0],
                          values['MetricDataResults'][7]['Values'][0]]
 
+    # Turning values to dataframe
     df_values_invocation = pd.DataFrame([values_invocation], columns=["Baseline", "Standard Queue", "FIFO Queue"])
 
+    # Use SNS and matplotlib to save the graph
     ax = sns.barplot(data=df_values_invocation, palette='Blues_d')
     ax.set(xlabel='Scenario', ylabel='Number of invocations (sum)')
-
     plt.savefig("../metrics_result/invocation_comparison.png", bbox_inches='tight')
 
 
