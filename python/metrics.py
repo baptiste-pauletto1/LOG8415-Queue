@@ -80,16 +80,26 @@ if __name__ == "__main__":
 
     values = get_values(cloudwatch, queries, datetime(2021, 12, 19, 9, 50), datetime(2021, 12, 19, 10, 10))
 
-    values_duration = [values['MetricDataResults'][0]['Values'][0],values['MetricDataResults'][3]['Values'][0],
+    values_concurrent = [values['MetricDataResults'][2]['Values'][0], values['MetricDataResults'][5]['Values'][0],
+                         values['MetricDataResults'][8]['Values'][0]]
+
+    df_values_concurrent = pd.DataFrame([values_concurrent], columns=["Baseline", "Standard Queue", "FIFO Queue"])
+
+    sns.set_theme(style="whitegrid")
+    ax = sns.barplot(data=df_values_concurrent, palette='Blues_d')
+    ax.set(xlabel='Scenario', ylabel='Number of concurrent executions (mean)')
+
+    plt.savefig("../metrics_result/concurrent_comparison.png", bbox_inches='tight')
+
+    values_duration = [values['MetricDataResults'][0]['Values'][0], values['MetricDataResults'][3]['Values'][0],
                        values['MetricDataResults'][6]['Values'][0]]
 
     df_values_duration = pd.DataFrame([values_duration], columns=["Baseline", "Standard Queue", "FIFO Queue"])
 
-    sns.set_theme(style="whitegrid")
     ax = sns.barplot(data=df_values_duration, palette='Blues_d')
     ax.set(xlabel='Scenario', ylabel='Duration (seconds) (mean)')
 
-    plt.show()
+    plt.savefig("../metrics_result/duration_comparison.png", bbox_inches='tight')
 
     values_invocation = [values['MetricDataResults'][1]['Values'][0], values['MetricDataResults'][4]['Values'][0],
                          values['MetricDataResults'][7]['Values'][0]]
@@ -99,15 +109,8 @@ if __name__ == "__main__":
     ax = sns.barplot(data=df_values_invocation, palette='Blues_d')
     ax.set(xlabel='Scenario', ylabel='Number of invocations (sum)')
 
-    plt.show()
+    plt.savefig("../metrics_result/invocation_comparison.png", bbox_inches='tight')
 
-    values_concurrent = [values['MetricDataResults'][2]['Values'][0], values['MetricDataResults'][5]['Values'][0],
-                         values['MetricDataResults'][8]['Values'][0]]
 
-    df_values_concurrent = pd.DataFrame([values_concurrent], columns=["Baseline", "Standard Queue", "FIFO Queue"])
 
-    ax = sns.barplot(data=df_values_concurrent, palette='Blues_d')
-    ax.set(xlabel='Scenario', ylabel='Number of concurrent executions (mean)')
-
-    plt.show()
 
