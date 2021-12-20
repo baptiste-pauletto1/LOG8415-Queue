@@ -25,10 +25,12 @@ To build the docker image where the project will run, use the following commands
 ```shell
 docker build -t <NAME> .
 ./run_docker.sh
+cd python/
 ```
 Notice that you can replace `<NAME>` with the name of your choice, in my case, I will be using `log8415`.
 
 You should now be inside your docker image, ready to run the scenarios.
+
 ## Step 2 : Launch scenarios
 In order to run the scenarios, you will have to launch one of the following commands depending on what scenario you want to run :
 
