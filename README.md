@@ -61,8 +61,12 @@ The produced barplot should look like those following :
 ![Invocation comparison barplot](https://github.com/baptiste-pauletto1/Queue-Analysis/blob/main/metrics_result/invocation_comparison.png?raw=true)
 <figcaption align = "center"><b>Fig.1 - Number of invocation comparison</b></figcaption>
 
-![Duration comparison barplot](https://github.com/baptiste-pauletto1/Queue-Analysis/blob/main/metrics_result/invocation_comparison.png?raw=true)
+![Duration comparison barplot](https://github.com/baptiste-pauletto1/Queue-Analysis/blob/main/metrics_result/duration_comparison.png?raw=true)
 <figcaption align = "center"><b>Fig.2 - Average duration comparison</b></figcaption>
 
-![Concurrent comparison barplot](https://github.com/baptiste-pauletto1/Queue-Analysis/blob/main/metrics_result/invocation_comparison.png?raw=true)
+![Concurrent comparison barplot](https://github.com/baptiste-pauletto1/Queue-Analysis/blob/main/metrics_result/concurrent_comparison.png?raw=true)
 <figcaption align = "center"><b>Fig.3 - Average Concurrent executions comparison</b></figcaption>
+
+## Author
+
+Baptiste Pauletto
