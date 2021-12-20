@@ -3,10 +3,10 @@ import boto3
 import time
 import random
 
-from python.lambda_wrapper import Lambda
-from python.sns_wrapper import SimpleNotificationService
-from python.sqs_wrapper import SimpleQueueService
-from python.dynamodb_wrapper import DynamoDB
+from lambda_wrapper import Lambda
+from sns_wrapper import SimpleNotificationService
+from sqs_wrapper import SimpleQueueService
+from dynamodb_wrapper import DynamoDB
 
 ACCOUNT_ID = ['866658200244']
 logger = logging.getLogger(__name__)
