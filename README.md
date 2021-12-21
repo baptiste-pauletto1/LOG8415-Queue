@@ -46,7 +46,7 @@ python3 scenario_1.py
 ```shell
 python3 scenario_2.py
 ```
-More details about each scenario are present in the `rapport.pdf` file.
+More details about each scenario are present in the `LOG8415_projet.pdf` file.
 
 When running scenarios, different logging steps will be displayed in order to follow how everything is going.
 
