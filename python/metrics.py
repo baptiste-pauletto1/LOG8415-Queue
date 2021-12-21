@@ -77,8 +77,8 @@ if __name__ == "__main__":
                query_duration_SC1, query_invocation_SC1, query_concurrent_SC1,
                query_duration_SC2, query_invocation_SC2, query_concurrent_SC2]
 
-    # Calling AWS Cloudwatch from now - 30 mins in the past.
-    values = get_values(cloudwatch, queries, datetime.now(), datetime.now() - timedelta(hours=0, minutes=30))
+    # Calling AWS Cloudwatch from now - 30 mins to now.
+    values = get_values(cloudwatch, queries, datetime.now() - timedelta(hours=0, minutes=30), datetime.now())
 
     # Formatting values
     values_concurrent = [values['MetricDataResults'][2]['Values'][0], values['MetricDataResults'][5]['Values'][0],
